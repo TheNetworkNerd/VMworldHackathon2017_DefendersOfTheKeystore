@@ -6,9 +6,9 @@
 <b>Hackathon Goal:</b>  Encrypt two VMs using Hytrust as the KMS.  This involves deploying a two-node Hytrust cluster, registering and configuring the KMS nodes with vCenter, creating VMs to encrypt, and actually turning on encryption for the VMs in question. 
 
 <b>Team Members:</b>
-Nick Korte,
 Chris Dye,
 Patrick Kremer,
 Michael White,
 Justin Coole,
-Ryan Conley
+Ryan Conley,
+Nick Korte
