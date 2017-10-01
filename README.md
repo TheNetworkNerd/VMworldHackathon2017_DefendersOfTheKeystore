@@ -1,2 +1,6 @@
 # VMworldHackathon2017_DefendersOfTheKeystore
-Repository for all things related to Defenders of the Keystore's Hackathon 2017 project
+<b> Team 3 - Defenders of the Keystore</b>
+
+<b>Problem:</b>  Using vSphere's VM Encryption functionality requires an external KMS setup and configuration for an administrator to get started using this feature.  If you're a vSphere admin and know very little about KMS, this may prove a difficult task.  
+
+<b>Hackathon Goal:</b>  Encrypt two VMs using Hytrust as the KMS.  This involves deploying a two-node Hytrust cluster, registering and configuring the KMS nodes with vCenter, creating VMs to encrypt, and actually turning on encryption for the VMs in question. 
