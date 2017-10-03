@@ -1,0 +1,68 @@
+#Powershell Script to login to Hytrust VM and take a backup
+#
+#This script assumes you have the cacert for your Hytrust VM installed s a trusted root CA on the machine that is running Powershell
+#
+#Created by Nick Korte on 7/27/2017
+#
+#Version History
+#     v1.00 - Build
+
+#Remove old backup files (anything older than 7 days)
+$BackupDir = "Insert File Location Here"
+$DaysOld = "-7"
+$CurrentDate = Get-Date
+$DeleteDate = $CurrentDate.AddDays($DaysOld)
+Get-ChildItem $BackupDir | Where-Object { $_.LastWriteTime -lt $DeleteDate } | Remove-Item
+
+
+#Specify the fqdn of the server that you want backed up
+$server="fqdn of my server"
+
+#Short server name for backup file name generation
+$shortserver="server netbios name"
+
+
+#Build the headers
+#The username and password parameters are specified in the programmer reference for Hytrust
+$headers=@{}
+$headers.add("username","myuser")
+$headers.add("password","mypassword")
+
+#Invoke the proper method to login and capture the authentication token as a variable (must be used to authenticate later API calls)
+$Token = Invoke-Restmethod -method POST -Uri "https://$server/v4/kc/login/" -body $headers
+
+#Build new iDictionary object for the headers to future API calls
+$Token2=@{}
+$Token2.add("Auth-Token",$Token.access_token)
+
+#Build iDictionary object for calls to system_backup method
+$Params =@{}
+$Params.add("verify","false")
+
+#Take a system backup - this only creates the backup and does not download it
+Invoke-Restmethod -method POST -Uri "https://$server/v4/system_backup/" -headers $Token2 -body $Params
+
+#Construct date for file name yyyymmdd
+$MyDate1 = get-date -uformat %Y
+$MyDate2 = get-date -uformat %m
+$MyDate3 = get-date -uformat %d
+$MyDate = $MyDate1 + $MyDate2 + $MyDate3
+
+#Construct time for file name hhmmss
+$MyTime1 = get-date -uformat %H
+$MyTime2 = get-date -uformat %M
+$MyTime3 = get-date -uformat %S
+$MyTime = $MyTime1 + $MyTime2 + $MyTime3
+
+#File name will be yyyymmdd.hhmmss_servername.bu
+$FileName = $BackupDir + "\" + $MyDate + "." + $MyTime + "_" + $shortserver + ".bu"
+
+#Download the backup to a file (needs to have a .bu extension) in the location of your choice
+Invoke-Restmethod -method GET -Uri "https://$server/v4/system_backup/" -headers $Token2 -body $Params -OutFile $FileName
+
+#Logout so the token is no longer valid
+Invoke-Restmethod -method POST -Uri "https://$server/v4/kc/logout/" -headers $Token2
+
+
+
+
