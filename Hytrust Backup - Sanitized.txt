@@ -1,6 +1,6 @@
 #Powershell Script to login to Hytrust VM and take a backup
 #
-#This script assumes you have the cacert for your Hytrust VM installed s a trusted root CA on the machine that is running Powershell
+#This script assumes you have the cacert for your Hytrust VM installed as a trusted root CA on the machine that is running Powershell
 #
 #Created by Nick Korte on 7/27/2017
 #
